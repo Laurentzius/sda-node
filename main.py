@@ -5,6 +5,7 @@ import json
 import os
 from threads.t2i import image_generator
 from io import BytesIO
+from flask_ngrok import run_with_ngrok
 
 def serve_pil_image(pil_img):
     img_io = BytesIO()
@@ -20,6 +21,7 @@ if os.path.exists(CONFIG_PATH):
 
 app = Flask(__name__, static_folder='demo')
 app.config['SECRET_KEY'] = 'secret!'
+run_with_ngrok(app)
 
 # Create the request queue and image queue
 request_queue = Queue()
@@ -64,11 +66,11 @@ def txt2img():
 
 # Image Generator Engine
 image_generator_thread = Thread(
-    target=image_generator, 
+    target=image_generator,
     args=(
-        config, 
+        config,
         request_queue,
         image_queue,
-        )
     )
+)
 image_generator_thread.start()
